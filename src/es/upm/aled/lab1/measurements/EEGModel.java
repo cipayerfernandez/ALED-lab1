@@ -56,7 +56,8 @@ public class EEGModel {
 	 * @param measurements The Measurements that make up the EEGModel.
 	 */
 	public EEGModel(Measurement[] measurements) {
-		// TODO
+		// CREO EEG A PARTIR DE ARRAY DE MEASUREMENTS QUE ME DAN
+		EEGModel eeg = new EEGModel(measurements);
 		
 	}
 
@@ -67,7 +68,8 @@ public class EEGModel {
 	 * @param measurement The Measurement to be added.
 	 */
 	public void addMeasurement(Measurement measurement) {
-		measurements.add(measurement);
+		measurements.add
+		(measurement);
 		if (gui != null)
 			gui.plotMeasurement(measurement);
 	}
@@ -131,6 +133,27 @@ public class EEGModel {
 	 */
 	public void saveFile(String fileName) throws IOException {
 		// TODO
+		// PREGUNTAR/BUSCAR FILEOUTPUTSTREAM, ETC.
+		File f = new File(fileName);
+		FileOutputStream fos = new FileOutputStream(f);
+		PrintStream ps = new PrintStream(fos);
+		
+		// TENGO QUE OBTENER LAS MEASUREMENTS DEL EEG PARA GUARDARLAS
+		// "this" hace referencia al objeto EEGModel sobre el que llamo
+		// al método saveFile(fileName)
+		Measurement[] measurementArray = this.getMeasurements();
+		
+		//INTRODUZCO LAS MEASUREMENTS EN EL ARCHIVO DE TEXTO
+		//CADA MEASUREMENT[] ES UN ARRAY DE FLOATS. DEBO PASARLAS A STRING
+		float i;
+		for (i = 0; i < measurementArray.length; i++) {
+			// PASO CADA MEDIDA DEL ARRAY A STRING Y LA GUARDO EN EL ARCHIVO TXT
+			ps.println(Float.toString(i));
+			
+		}
+		// CIERRO STREAMS
+		fos.close();
+		ps.close();
 		
 	}
 
