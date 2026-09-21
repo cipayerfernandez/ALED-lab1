@@ -133,24 +133,39 @@ public class EEGModel {
 	 */
 	public void saveFile(String fileName) throws IOException {
 		// TODO
-		// PREGUNTAR/BUSCAR FILEOUTPUTSTREAM, ETC.
+		// PREGUNTAR/BUSCAR INFO DE FILEOUTPUTSTREAM, ETC.
 		File f = new File(fileName);
 		FileOutputStream fos = new FileOutputStream(f);
 		PrintStream ps = new PrintStream(fos);
 		
-		// TENGO QUE OBTENER LAS MEASUREMENTS DEL EEG PARA GUARDARLAS
-		// "this" hace referencia al objeto EEGModel sobre el que llamo
-		// al método saveFile(fileName)
-		Measurement[] measurementArray = this.getMeasurements();
+		// OBTENGO LAS MEASUREMENTS DEL OBJETO EEGModel
+		Measurement[] measurementArray = this.getMeasurements();	// "this" hace referencia al EEGModel sobre el que llamo al método saveFile(fileName)
 		
-		//INTRODUZCO LAS MEASUREMENTS EN EL ARCHIVO DE TEXTO
-		//CADA MEASUREMENT[] ES UN ARRAY DE FLOATS. DEBO PASARLAS A STRING
-		float i;
-		for (i = 0; i < measurementArray.length; i++) {
-			// PASO CADA MEDIDA DEL ARRAY A STRING Y LA GUARDO EN EL ARCHIVO TXT
-			ps.println(Float.toString(i));
+		// IMPRIMO LA CABECERA DEL ARCHIVO TXT (copiado de OpenBCI_raw_1.txt)
+		ps.print("%OpenBCI Raw EEG Data\n"	// Hago "print" en vez de "println" porque con \n ya hace el salto de línea
+				+ "%\n"
+				+ "%Sample Rate = 250.0 Hz\n"
+				+ "%First Column = SampleIndex\n"
+				+ "%Other Columns = EEG data in microvolts with optional columns at end being unscaled Aux data\n");
+		
+		// RECORRO measurementArray, Y DESPUÉS RECORRO CADA UNA DE SUS Measurement. OBTENGO LOS CHANNELS (float)
+		for (int i = 0; i < measurementArray.length; i++) {
+			Measurement m = measurementArray[i];	// Guardo la Measurement de la posición i en una variable
+			ps.print(Integer.toString(i) + ", ");	// Imprimo la posición de measurementArray en formato String. No hago salto de línea
 			
-		}
+			for (int j = 0; j < m.numChannels(); j++) {	// Obtengo la longitud de la Measurement "m" mediante numChannels()
+				float channel = m.getChannel(j);	// Guardo el valor del canal en la posición j en una variable
+				ps.print(Float.toString(channel));	// Imprimo el valor "channel" pasado a String
+				
+				while (j < m.numChannels() - 1) {	//  Pongo -1 porque no quiero que ponga coma al final del último channel
+				ps.print(", ");	// Imprimo coma y espacio
+				}
+			
+			}
+		
+			ps.print("\n");	// Salto de línea al llegar al final de cada Measurement
+		
+		}	
 		// CIERRO STREAMS
 		fos.close();
 		ps.close();
