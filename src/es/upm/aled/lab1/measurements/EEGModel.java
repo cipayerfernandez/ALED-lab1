@@ -57,8 +57,8 @@ public class EEGModel {
 	 */
 	public EEGModel(Measurement[] measurements) {
 		// CREO EEG A PARTIR DE ARRAY DE MEASUREMENTS QUE ME DAN
-		EEGModel eeg = new EEGModel(measurements);
-		
+		// EEGModel eeg = new EEGModel(measurements);	// ver por qué está mal
+		this.measurements = Arrays.asList(measurements);	// solución del profe
 	}
 
 	/**
@@ -132,7 +132,6 @@ public class EEGModel {
 	 * @throws IOException Thrown if the file can't be written.
 	 */
 	public void saveFile(String fileName) throws IOException {
-		// TODO
 		// PREGUNTAR/BUSCAR INFO DE FILEOUTPUTSTREAM, ETC.
 		File f = new File(fileName);
 		FileOutputStream fos = new FileOutputStream(f);
@@ -149,27 +148,27 @@ public class EEGModel {
 				+ "%Other Columns = EEG data in microvolts with optional columns at end being unscaled Aux data\n");
 		
 		// RECORRO measurementArray, Y DESPUÉS RECORRO CADA UNA DE SUS Measurement. OBTENGO LOS CHANNELS (float)
+		int index = 0;	// Creo el índice de la measurement. Lo voy a iterar
+		
 		for (int i = 0; i < measurementArray.length; i++) {
 			Measurement m = measurementArray[i];	// Guardo la Measurement de la posición i en una variable
-			ps.print(Integer.toString(i) + ", ");	// Imprimo la posición de measurementArray en formato String. No hago salto de línea
+			String line = Integer.toString(index) + ", ";	// Creo la línea que imprimiré al final. Guardo el índice de la measurement en formato String.
 			
 			for (int j = 0; j < m.numChannels(); j++) {	// Obtengo la longitud de la Measurement "m" mediante numChannels()
 				float channel = m.getChannel(j);	// Guardo el valor del canal en la posición j en una variable
-				ps.print(Float.toString(channel));	// Imprimo el valor "channel" pasado a String
+				line = line + Float.toString(channel);	// Imprimo el valor "channel" pasado a String
 				
-				while (j < m.numChannels() - 1) {	//  Pongo -1 porque no quiero que ponga coma al final del último channel
-				ps.print(", ");	// Imprimo coma y espacio
+				if (j < m.numChannels() - 1) {	//  Pongo -1 porque no quiero que ponga coma al final del último channel
+				line = line + ", ";	// Imprimo coma y espacio
 				}
-			
 			}
-		
-			ps.print("\n");	// Salto de línea al llegar al final de cada Measurement
-		
+			// SALTO DE LÍNEA AL LLEGAR AL FINAL DE CADA MEASUREMENT
+			ps.print(line);	// Imprimo la línea
+			index++;	// Avanzo el índice
 		}	
 		// CIERRO STREAMS
 		fos.close();
 		ps.close();
-		
 	}
 
 	/**
@@ -292,7 +291,12 @@ public class EEGModel {
 		} else {
 			EEGModel eeg = new EEGModel();
 			eeg.createSyntheticData(1000);
-			// TODO
+			try {
+				eeg.saveFile("Synthetic.txt");
+			} catch (IOException e) {
+				System.out.println("No se ha podido escribir en el archivo");
+				e.printStackTrace();
+			}
 			
 		}
 	}
