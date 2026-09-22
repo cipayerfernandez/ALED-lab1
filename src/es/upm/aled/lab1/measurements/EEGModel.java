@@ -91,9 +91,9 @@ public class EEGModel {
 	 * @return The new EEGModel.
 	 */
 	public EEGModel filter(Filter filter) {
-		// TODO
-		
-		return null;
+		// AQUÍ CREO E INSTANCIO LOS DOS TIPOS DE FILTRO
+		EEGModel filteredModel = filter.applyFilter(this);	//"this" equivale a un objeto EEGModel
+		return filteredModel;
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class EEGModel {
 				}
 			}
 			// SALTO DE LÍNEA AL LLEGAR AL FINAL DE CADA MEASUREMENT
-			ps.print(line);	// Imprimo la línea
+			ps.println(line);	// Imprimo la línea
 			index++;	// Avanzo el índice
 		}	
 		// CIERRO STREAMS
@@ -286,18 +286,53 @@ public class EEGModel {
 		if (args.length > 0) {
 			EEGModel eeg = new EEGModel(args[0]);
 			eeg.plotData();
-			// TODO
+	
+			// FILTRO 3 ÚLTIMOS CANALES
+			/*int[] validChannels = new int[3];	// Según el enunciado, quiero los últimos 3 canales
+			int iFilteredChannels = 0;
+			Measurement[] measurements = eeg.getMeasurements();	// Obtengo array de medidas
+			for (int i = 0; i < measurements.length; i++) {	// Itero las medidas
+				Measurement m = measurements[i];
+				for (int j = 0; j < m.numChannels(); j++) {	
+					if (j > m.numChannels() - 3) {
+						validChannels[iFilteredChannels] = j;	// Si el índice del canal (j) es mayor que el tamaño de la medida menos 3, lo añado a validChannels
+						iFilteredChannels++;
+					}
+				}
+			}*/
+			int validChannels[] = { 8, 9, 10 };
+			Filter channelFilter = new FilterExtractChannels(validChannels);
 			
-		} else {
+			// FILTRO EL RANGO [2750, 5750]
+			int min = 2750;
+			int max = 5750;
+			Filter periodFilter = new FilterExtractPeriod(min, max);
+			
+			// PLOTTEAMOS EL EEGMODEL CON LOS FILTROS APLICADOS
+			EEGModel filteredModel = eeg.filter(channelFilter).filter(periodFilter);
+			filteredModel.plotData();
+			
+			try {
+				filteredModel.saveFile("FilteredData.txt");
+			} catch (IOException e) {
+				System.out.println("Error writing to file. Do you have access and does the folder exist?");
+				e.printStackTrace();
+			}
+			
+			} else {
 			EEGModel eeg = new EEGModel();
-			eeg.createSyntheticData(1000);
+			eeg.createSyntheticData(100);
 			try {
 				eeg.saveFile("Synthetic.txt");
+				EEGModel eegFromFile = new EEGModel("SyntheticData.txt");
+				eegFromFile.plotData();
 			} catch (IOException e) {
 				System.out.println("No se ha podido escribir en el archivo");
 				e.printStackTrace();
 			}
 			
-		}
+			}
+	
 	}
 }
+
