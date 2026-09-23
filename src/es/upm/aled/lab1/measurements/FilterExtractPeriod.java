@@ -36,12 +36,11 @@ public class FilterExtractPeriod implements Filter {
 	@Override
 	// FILTEREXTRACTPERIOD DEVUELVE UN EEG CON LAS MEDIDAS COMPRENDIDAS ENTRE LOS ÍNDICES MIN Y MAX
 	public EEGModel applyFilter(EEGModel eeg) {
-		// TODO
 		Measurement[] m = eeg.getMeasurements();
 		Measurement[] filteredMeasurements = new Measurement[max - min];	// Longitud del array obtenida de solución del profe
 
 		if ((max-min) < m.length) {	// Condición del enunciado
-			for (int iMeasurements = 0; iMeasurements < m.length; ) { 
+			for (int iMeasurements = 0; iMeasurements < m.length; iMeasurements++) { 
 				int iFilteredMeasurements = 0;
 				if (iMeasurements >= min && iMeasurements <= max) {	// Compruebo si el índice de cada medida está en el intervalo (min, max) 
 					filteredMeasurements[iFilteredMeasurements] = m[iMeasurements];

@@ -333,7 +333,7 @@ public class EEGModel {
 			}*/
 			
 			// FILTRO 3 ÚLTIMOS CANALES
-			int validChannels[] = { 8, 9, 10 };
+			int[] validChannels = { 8, 9, 10 };
 			Filter channelFilter = new FilterExtractChannels(validChannels);
 			
 			// FILTRO EL RANGO [2750, 5750]
