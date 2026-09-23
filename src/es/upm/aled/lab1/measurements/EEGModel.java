@@ -91,7 +91,6 @@ public class EEGModel {
 	 * @return The new EEGModel.
 	 */
 	public EEGModel filter(Filter filter) {
-		// AQUÍ CREO E INSTANCIO LOS DOS TIPOS DE FILTRO
 		EEGModel filteredModel = filter.applyFilter(this);	//"this" equivale a un objeto EEGModel
 		return filteredModel;
 	}
@@ -283,12 +282,12 @@ public class EEGModel {
 	}
 
 	public static void main(String[] args) {
-		if (args.length > 0) {
+		/*if (args.length > 0) {
 			EEGModel eeg = new EEGModel(args[0]);
 			eeg.plotData();
 	
 			// FILTRO 3 ÚLTIMOS CANALES
-			/*int[] validChannels = new int[3];	// Según el enunciado, quiero los últimos 3 canales
+			int[] validChannels = new int[3];	// Según el enunciado, quiero los últimos 3 canales
 			int iFilteredChannels = 0;
 			Measurement[] measurements = eeg.getMeasurements();	// Obtengo array de medidas
 			for (int i = 0; i < measurements.length; i++) {	// Itero las medidas
@@ -299,7 +298,7 @@ public class EEGModel {
 						iFilteredChannels++;
 					}
 				}
-			}*/
+			}
 			int validChannels[] = { 8, 9, 10 };
 			Filter channelFilter = new FilterExtractChannels(validChannels);
 			
@@ -308,10 +307,44 @@ public class EEGModel {
 			int max = 5750;
 			Filter periodFilter = new FilterExtractPeriod(min, max);
 			
-			// PLOTTEAMOS EL EEGMODEL CON LOS FILTROS APLICADOS
+			// PLOTTEO EL EEGMODEL CON LOS FILTROS APLICADOS
 			EEGModel filteredModel = eeg.filter(channelFilter).filter(periodFilter);
 			filteredModel.plotData();
+
+			try {
+				filteredModel.saveFile("FilteredData.txt");
+			} catch (IOException e) {
+				System.out.println("Error writing to file. Do you have access and does the folder exist?");
+				e.printStackTrace();
+			}
+			*/
 			
+			
+			//} else {
+			EEGModel eeg = new EEGModel();
+			eeg.createSyntheticData(100);
+			/*try {
+				eeg.saveFile("Synthetic.txt");
+				EEGModel eegFromFile = new EEGModel("SyntheticData.txt");
+				eegFromFile.plotData();
+			} catch (IOException e) {
+				System.out.println("No se ha podido escribir en el archivo");
+				e.printStackTrace();
+			}*/
+			
+			// FILTRO 3 ÚLTIMOS CANALES
+			int validChannels[] = { 8, 9, 10 };
+			Filter channelFilter = new FilterExtractChannels(validChannels);
+			
+			// FILTRO EL RANGO [2750, 5750]
+			int min = 2750;
+			int max = 5750;
+			Filter periodFilter = new FilterExtractPeriod(min, max);
+			
+			// PLOTTEO EL EEGMODEL CON LOS FILTROS APLICADOS
+			EEGModel filteredModel = eeg.filter(channelFilter).filter(periodFilter);
+			filteredModel.plotData();
+
 			try {
 				filteredModel.saveFile("FilteredData.txt");
 			} catch (IOException e) {
@@ -319,20 +352,8 @@ public class EEGModel {
 				e.printStackTrace();
 			}
 			
-			} else {
-			EEGModel eeg = new EEGModel();
-			eeg.createSyntheticData(100);
-			try {
-				eeg.saveFile("Synthetic.txt");
-				EEGModel eegFromFile = new EEGModel("SyntheticData.txt");
-				eegFromFile.plotData();
-			} catch (IOException e) {
-				System.out.println("No se ha podido escribir en el archivo");
-				e.printStackTrace();
-			}
-			
 			}
 	
-	}
+	//}
 }
 
