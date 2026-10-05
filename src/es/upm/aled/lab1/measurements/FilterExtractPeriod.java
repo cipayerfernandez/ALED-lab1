@@ -45,7 +45,6 @@ public class FilterExtractPeriod implements Filter {
 				if (iMeasurements >= min && iMeasurements <= max) {	// Compruebo si el índice de cada medida está en el intervalo (min, max) 
 					filteredMeasurements[iFilteredMeasurements] = m[iMeasurements];
 					iFilteredMeasurements++;
-					break;
 				}
 			}
 		} else {
